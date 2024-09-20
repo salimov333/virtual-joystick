@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Touch & Hold Movement Control</title>
+    <style>
+      :root {
+        --ball-width: 50px;
+      }
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+      }
+
+      #gameArea {
+        position: relative;
+        width: 80vw;
+        height: 80vh;
+        background-color: #000000;
+        border-radius: 30px;
+        overflow: hidden;
+      }
+
+      #circle {
+        position: absolute;
+        width: var(--ball-width);
+        height: var(--ball-width);
+        background-color: red;
+        border-radius: 50%;
+        transition: 0.3s linear;
+        left: 50%; /* Horizontally center */
+        top: 50%; /* Vertically center */
+      }
+
+      #controlArea {
+        position: absolute;
+        bottom: 10%;
+        left: 50%; /* Horizontally center */
+        transform: translateX(-50%);
+        width: 120px;
+        height: 120px;
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        border: 2px solid #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #controlBall {
+        width: 40px;
+        height: 40px;
+        background-color: gray;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="gameArea">
+      <div id="circle"></div>
+      <div id="controlArea">
+        <div id="controlBall"></div>
+      </div>
+    </div>
+
+    <script>
+      const gameArea = document.getElementById("gameArea");
+      const circle = document.getElementById("circle");
+      const controlArea = document.getElementById("controlArea");
+      const controlBall = document.getElementById("controlBall");
+
+      let circleX = (gameArea.offsetWidth - circle.offsetWidth) / 2; // Initial X position (centered horizontally)
+      let circleY =
+        (gameArea.offsetHeight - circle.offsetHeight) / 2 -
+        circle.offsetWidth * 4; // Initial Y position
+      const moveSpeed = 5; // Increased speed factor for circle movement
+      let dragging = false; // To track if the user is dragging the control ball
+      let touchStartX, touchStartY; // Starting touch coordinates
+
+      // Set initial position of the circle in the center
+      function updateCirclePosition() {
+        circle.style.left = `${circleX}px`;
+        circle.style.top = `${circleY}px`;
+      }
+
+      // Function to detect if the touch is within the control area
+      function isTouchInControlArea(touchX, touchY) {
+        const rect = controlArea.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const radius = rect.width / 2;
+        const distance = Math.sqrt(
+          Math.pow(touchX - centerX, 2) + Math.pow(touchY - centerY, 2)
+        );
+        return distance <= radius; // Check if touch is within the radius of the control area
+      }
+
+      // Handle touch start in the control area
+      controlArea.addEventListener("touchstart", (e) => {
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        if (isTouchInControlArea(touchStartX, touchStartY)) {
+          dragging = true;
+        }
+      });
+
+      // Handle touch move in the control area
+      controlArea.addEventListener("touchmove", (e) => {
+        if (!dragging) return;
+
+        const touch = e.touches[0];
+        const deltaX = touch.clientX - touchStartX;
+        const deltaY = touch.clientY - touchStartY;
+
+        // Stop dragging if the user moves outside the control area
+        if (!isTouchInControlArea(touch.clientX, touch.clientY)) {
+          dragging = false;
+          return;
+        }
+
+        // Move circle based on touch movement
+        circleX = Math.min(
+          gameArea.offsetWidth - circle.offsetWidth,
+          Math.max(0, circleX + deltaX * moveSpeed)
+        );
+        circleY = Math.min(
+          gameArea.offsetHeight -
+            circle.offsetHeight -
+            controlArea.offsetHeight -
+            20, // Prevent overlap with control area
+          Math.max(0, circleY + deltaY * moveSpeed)
+        );
+
+        updateCirclePosition();
+
+        // Reset touchStartX and touchStartY for continuous movement
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+      });
+
+      // Handle touch end (stop dragging)
+      controlArea.addEventListener("touchend", () => {
+        dragging = false;
+      });
+
+      // Keyboard controls for desktop
+      let keysPressed = {};
+
+      document.addEventListener("keydown", (e) => {
+        keysPressed[e.key] = true;
+      });
+
+      document.addEventListener("keyup", (e) => {
+        keysPressed[e.key] = false;
+      });
+
+      function moveCircle() {
+        if (keysPressed["ArrowUp"]) {
+          circleY = Math.max(0, circleY - moveSpeed);
+        }
+        if (keysPressed["ArrowDown"]) {
+          circleY = Math.min(
+            gameArea.offsetHeight -
+              circle.offsetHeight -
+              controlArea.offsetHeight -
+              20,
+            circleY + moveSpeed
+          ); // Prevent overlap with control area
+        }
+        if (keysPressed["ArrowLeft"]) {
+          circleX = Math.max(0, circleX - moveSpeed);
+        }
+        if (keysPressed["ArrowRight"]) {
+          circleX = Math.min(
+            gameArea.offsetWidth - circle.offsetWidth,
+            circleX + moveSpeed
+          );
+        }
+        updateCirclePosition();
+        requestAnimationFrame(moveCircle); // Request the next frame
+      }
+
+      // Start the animation loop for keyboard movement
+      requestAnimationFrame(moveCircle);
+
+      // Set the initial position of the circle
+      updateCirclePosition();
+    </script>
+  </body>
+</html>
