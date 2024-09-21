@@ -7,6 +7,7 @@
     <style>
       :root {
         --ball-width: 50px;
+        --control-area-offset: 10%; /* Control area offset from the bottom */
       }
       body {
         margin: 0;
@@ -75,6 +76,11 @@
       const controlArea = document.getElementById("controlArea");
       const controlBall = document.getElementById("controlBall");
 
+      // Retrieve the CSS variable for the control area's bottom offset
+      const rootStyles = getComputedStyle(document.documentElement);
+      const controlAreaOffset =
+        parseFloat(rootStyles.getPropertyValue("--control-area-offset")) / 100;
+
       let circleX = (gameArea.offsetWidth - circle.offsetWidth) / 2; // Initial X position (centered horizontally)
       let circleY =
         (gameArea.offsetHeight - circle.offsetHeight) / 2 -
@@ -130,11 +136,14 @@
           gameArea.offsetWidth - circle.offsetWidth,
           Math.max(0, circleX + deltaX * moveSpeed)
         );
-        circleY = Math.min(
+        const controlAreaTop =
           gameArea.offsetHeight -
-            circle.offsetHeight -
-            controlArea.offsetHeight -
-            20, // Prevent overlap with control area
+          controlArea.offsetHeight -
+          gameArea.offsetHeight * controlAreaOffset;
+
+        circleY = Math.min(
+          controlAreaTop - circle.offsetHeight - 20, // Prevent overlap with controlArea
+          circleY + moveSpeed,
           Math.max(0, circleY + deltaY * moveSpeed)
         );
 
@@ -166,13 +175,14 @@
           circleY = Math.max(0, circleY - moveSpeed);
         }
         if (keysPressed["ArrowDown"]) {
-          circleY = Math.min(
+          const controlAreaTop =
             gameArea.offsetHeight -
-              circle.offsetHeight -
-              controlArea.offsetHeight -
-              20,
+            controlArea.offsetHeight -
+            gameArea.offsetHeight * controlAreaOffset;
+          circleY = Math.min(
+            controlAreaTop - circle.offsetHeight - 20, // Prevent overlap with controlArea
             circleY + moveSpeed
-          ); // Prevent overlap with control area
+          );
         }
         if (keysPressed["ArrowLeft"]) {
           circleX = Math.max(0, circleX - moveSpeed);
