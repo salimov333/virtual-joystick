@@ -23,7 +23,7 @@ if (isTouchDevice) {
 // Center the circle by accounting for half its width/height
 let circleX = (moveArea.offsetWidth - ballWidth) / 2;
 let circleY = (moveArea.offsetHeight - ballWidth) / 2;
-const moveSpeed = 4; // Movement speed
+const moveSpeed = 5; // Movement speed
 
 let dragging = false;
 let touchStartX, touchStartY;
@@ -55,7 +55,7 @@ function constrainControlBallToBounds(controlBallX, controlBallY) {
     const centerY = joystickRect.height / 2;
 
     const distance = Math.sqrt((controlBallX - centerX) ** 2 + (controlBallY - centerY) ** 2);
-    if (distance > joystickRect.width / 2 - controlBallWidth / 2) {
+    if (distance > centerX - controlBallWidth / 2) {
         const angle = Math.atan2(controlBallY - centerY, controlBallX - centerX);
         controlBallX = centerX + (joystickRect.width / 2 - controlBallWidth / 2) * Math.cos(angle);
         controlBallY = centerY + (joystickRect.height / 2 - controlBallWidth / 2) * Math.sin(angle);
