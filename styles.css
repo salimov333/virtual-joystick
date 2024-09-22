@@ -1,6 +1,6 @@
 :root {
     --ball-width: 50px;
-    --joystick-width: 130px;
+    --keyboardJoystick-width: 130px;
     --control-ball-width: 40px;
 }
 
@@ -53,9 +53,9 @@ body {
     position: relative;
 }
 
-#joystick, #keyboardJoystick {
-    width: var(--joystick-width);
-    height: var(--joystick-width);
+#keyboardJoystick {
+    width: var(--keyboardJoystick-width);
+    height: var(--keyboardJoystick-width);
     background-color: rgba(0, 0, 0, 0.2);
     border: 2px solid #333;
     border-radius: 50%;
@@ -65,17 +65,13 @@ body {
     position: relative;
 }
 
-#joystick.hidden, #keyboardJoystick.hidden {
-    display: none;
-}
-
 #controlBall {
     width: var(--control-ball-width);
     height: var(--control-ball-width);
     background-color: gray;
     border-radius: 50%;
     position: absolute;
-    /* Make it position absolute to move freely within joystick */
+    /* Make it position absolute to move freely within keyboardJoystick */
 }
 
 /* Arrow icon styles */
