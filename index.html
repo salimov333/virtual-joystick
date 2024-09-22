@@ -7,8 +7,10 @@
     <style>
       :root {
         --ball-width: 50px;
-        --control-area-offset: 10%; /* Control area offset from the bottom */
+        --joystick-width: 120px;
+        --control-ball-width: 40px;
       }
+
       body {
         margin: 0;
         display: flex;
@@ -20,12 +22,19 @@
       }
 
       #gameArea {
-        position: relative;
+        display: flex;
+        flex-direction: column;
         width: 80vw;
         height: 80vh;
-        background-color: #000000;
+        background-color: #000;
         border-radius: 30px;
         overflow: hidden;
+      }
+
+      #moveArea {
+        position: relative;
+        flex: 7; /* 70% of the game area */
+        background-color: #282828;
       }
 
       #circle {
@@ -35,28 +44,36 @@
         background-color: red;
         border-radius: 50%;
         transition: 0.3s linear;
-        left: 50%; /* Horizontally center */
-        top: 50%; /* Vertically center */
+        transform: translate(
+          -50%,
+          -50%
+        ); /* Perfectly center based on own size */
       }
 
       #controlArea {
-        position: absolute;
-        bottom: 10%;
-        left: 50%; /* Horizontally center */
-        transform: translateX(-50%);
-        width: 120px;
-        height: 120px;
-        background-color: rgba(0, 0, 0, 0.1);
-        border-radius: 50%;
-        border: 2px solid #333;
+        flex: 3; /* 30% of the game area */
         display: flex;
         justify-content: center;
         align-items: center;
+        background-color: rgba(0, 0, 0, 0.1);
+        position: relative;
+      }
+
+      #joystik {
+        width: var(--joystick-width);
+        height: var(--joystick-width);
+        background-color: rgba(0, 0, 0, 0.2);
+        border: 2px solid #333;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
       }
 
       #controlBall {
-        width: 40px;
-        height: 40px;
+        width: var(--control-ball-width);
+        height: var(--control-ball-width);
         background-color: gray;
         border-radius: 50%;
       }
@@ -64,60 +81,75 @@
   </head>
   <body>
     <div id="gameArea">
-      <div id="circle"></div>
+      <div id="moveArea">
+        <div id="circle"></div>
+      </div>
       <div id="controlArea">
-        <div id="controlBall"></div>
+        <div id="joystik">
+          <div id="controlBall"></div>
+        </div>
       </div>
     </div>
 
     <script>
-      const gameArea = document.getElementById("gameArea");
+      const moveArea = document.getElementById("moveArea");
       const circle = document.getElementById("circle");
       const controlArea = document.getElementById("controlArea");
+      const joystick = document.getElementById("joystik");
       const controlBall = document.getElementById("controlBall");
 
-      // Retrieve the CSS variable for the control area's bottom offset
       const rootStyles = getComputedStyle(document.documentElement);
-      const controlAreaOffset =
-        parseFloat(rootStyles.getPropertyValue("--control-area-offset")) / 100;
+      const ballWidth = parseFloat(rootStyles.getPropertyValue("--ball-width"));
+      const joystickWidth = parseFloat(
+        rootStyles.getPropertyValue("--joystick-width")
+      );
 
-      let circleX = (gameArea.offsetWidth - circle.offsetWidth) / 2; // Initial X position (centered horizontally)
-      let circleY =
-        (gameArea.offsetHeight - circle.offsetHeight) / 2 -
-        circle.offsetWidth * 4; // Initial Y position
-      const moveSpeed = 5; // Increased speed factor for circle movement
-      let dragging = false; // To track if the user is dragging the control ball
-      let touchStartX, touchStartY; // Starting touch coordinates
+      // Center the circle by accounting for half its width/height
+      let circleX = (moveArea.offsetWidth - ballWidth) / 2;
+      let circleY = (moveArea.offsetHeight - ballWidth) / 2;
+      const moveSpeed = 5; // Movement speed
 
-      // Set initial position of the circle in the center
+      let dragging = false;
+      let touchStartX, touchStartY;
+
       function updateCirclePosition() {
-        circle.style.left = `${circleX}px`;
-        circle.style.top = `${circleY}px`;
+        circle.style.left = `${circleX + ballWidth / 2}px`; // Offset by half of ballWidth for centering
+        circle.style.top = `${circleY + ballWidth / 2}px`;
       }
 
-      // Function to detect if the touch is within the control area
-      function isTouchInControlArea(touchX, touchY) {
-        const rect = controlArea.getBoundingClientRect();
+      // Ensure that the circle stays within the bounds of moveArea
+      function constrainCircleToBounds() {
+        circleX = Math.max(
+          0,
+          Math.min(circleX, moveArea.offsetWidth - ballWidth)
+        );
+        circleY = Math.max(
+          0,
+          Math.min(circleY, moveArea.offsetHeight - ballWidth)
+        );
+      }
+
+      // Function to check if the touch is within joystick bounds
+      function isTouchInJoystick(touchX, touchY) {
+        const rect = joystick.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
         const radius = rect.width / 2;
         const distance = Math.sqrt(
           Math.pow(touchX - centerX, 2) + Math.pow(touchY - centerY, 2)
         );
-        return distance <= radius; // Check if touch is within the radius of the control area
+        return distance <= radius; // Check if touch is within joystick's radius
       }
 
-      // Handle touch start in the control area
       controlArea.addEventListener("touchstart", (e) => {
         const touch = e.touches[0];
         touchStartX = touch.clientX;
         touchStartY = touch.clientY;
-        if (isTouchInControlArea(touchStartX, touchStartY)) {
+        if (isTouchInJoystick(touchStartX, touchStartY)) {
           dragging = true;
         }
       });
 
-      // Handle touch move in the control area
       controlArea.addEventListener("touchmove", (e) => {
         if (!dragging) return;
 
@@ -125,41 +157,28 @@
         const deltaX = touch.clientX - touchStartX;
         const deltaY = touch.clientY - touchStartY;
 
-        // Stop dragging if the user moves outside the control area
-        if (!isTouchInControlArea(touch.clientX, touch.clientY)) {
+        // Stop dragging if the user moves outside the joystick
+        if (!isTouchInJoystick(touch.clientX, touch.clientY)) {
           dragging = false;
           return;
         }
 
-        // Move circle based on touch movement
-        circleX = Math.min(
-          gameArea.offsetWidth - circle.offsetWidth,
-          Math.max(0, circleX + deltaX * moveSpeed)
-        );
-        const controlAreaTop =
-          gameArea.offsetHeight -
-          controlArea.offsetHeight -
-          gameArea.offsetHeight * controlAreaOffset;
-
-        circleY = Math.min(
-          controlAreaTop - circle.offsetHeight - 20, // Prevent overlap with controlArea
-          circleY + moveSpeed,
-          Math.max(0, circleY + deltaY * moveSpeed)
-        );
-
+        // Update circle position and constrain it within moveArea bounds
+        circleX += deltaX * moveSpeed;
+        circleY += deltaY * moveSpeed;
+        constrainCircleToBounds();
         updateCirclePosition();
 
-        // Reset touchStartX and touchStartY for continuous movement
+        // Reset touch start positions for continuous movement
         touchStartX = touch.clientX;
         touchStartY = touch.clientY;
       });
 
-      // Handle touch end (stop dragging)
       controlArea.addEventListener("touchend", () => {
         dragging = false;
       });
 
-      // Keyboard controls for desktop
+      // Keyboard controls
       let keysPressed = {};
 
       document.addEventListener("keydown", (e) => {
@@ -172,32 +191,25 @@
 
       function moveCircle() {
         if (keysPressed["ArrowUp"]) {
-          circleY = Math.max(0, circleY - moveSpeed);
+          circleY -= moveSpeed;
         }
         if (keysPressed["ArrowDown"]) {
-          const controlAreaTop =
-            gameArea.offsetHeight -
-            controlArea.offsetHeight -
-            gameArea.offsetHeight * controlAreaOffset;
-          circleY = Math.min(
-            controlAreaTop - circle.offsetHeight - 20, // Prevent overlap with controlArea
-            circleY + moveSpeed
-          );
+          circleY += moveSpeed;
         }
         if (keysPressed["ArrowLeft"]) {
-          circleX = Math.max(0, circleX - moveSpeed);
+          circleX -= moveSpeed;
         }
         if (keysPressed["ArrowRight"]) {
-          circleX = Math.min(
-            gameArea.offsetWidth - circle.offsetWidth,
-            circleX + moveSpeed
-          );
+          circleX += moveSpeed;
         }
+
+        constrainCircleToBounds();
         updateCirclePosition();
-        requestAnimationFrame(moveCircle); // Request the next frame
+
+        requestAnimationFrame(moveCircle);
       }
 
-      // Start the animation loop for keyboard movement
+      // Start the keyboard movement loop
       requestAnimationFrame(moveCircle);
 
       // Set the initial position of the circle
