@@ -2,22 +2,24 @@
 
 ## 📖 Overview
 
-This application simulates a *virtual joystick*, supporting both **touch** and **keyboard** interfaces.
-
-It is an interactive browser-based application that allows users to control a red circle using touch gestures on mobile devices and keyboard inputs on desktop. This intuitive control system provides a seamless gaming experience, enhancing user interaction through simple drag-and-drop mechanics.
+This is a simple web application that simulates a virtual joystick for controlling a circle inside a game area. It supports both touch controls (for mobile devices) and keyboard controls (for desktop users). This project is designed to work seamlessly across different devices and screen sizes.
 
 ## ✨ Features
 
-- **Touch Control**: Effortlessly drag the control ball to move the circle in any direction on mobile devices.
-- **Keyboard Control**: Utilize arrow keys to navigate the circle on desktop browsers.
-- **Responsive Design**: Fully functional on both mobile and desktop devices, ensuring a consistent experience across platforms.
-- **Smooth Movement**: Enhanced movement responsiveness for a more engaging user experience.
+- Touch Controls: A virtual joystick for moving the circle on touch devices.
+- Keyboard Controls: Use arrow keys to move the circle on non-touch devices.
+- Responsive Design: Adjusts to different screen sizes.
+- Optimized for Performance: Smooth animations and event handling for better responsiveness.
 
 ## 🛠️ Technologies Used
 
 - **HTML5**: Structure of the application.
 - **CSS3**: Styling and layout.
 - **JavaScript**: Interactive functionalities and game mechanics.
+
+## 🌐 Live Demo
+
+You can access the live version of the app on GitHub Pages at [Live Demo](https://salimov333.github.io/virtual-joystick).
 
 ## 🚀 Getting Started
 
@@ -44,7 +46,7 @@ It is an interactive browser-based application that allows users to control a re
 
    - Double-click the file or drag it into your browser to launch the app.
 
-2. **Interface**: The application features a black game area with a red circle and a circular control area at the bottom.
+2. **Interface**: The application features a game area with a red circle and a joystick (circular control area) at the bottom.
 
 ## 🎮 Usage Instructions
 
@@ -61,10 +63,7 @@ It is an interactive browser-based application that allows users to control a re
   - `Arrow Left`: Move left
   - `Arrow Right`: Move right
 
-## 🌐 Deployment
-
-You can access the live version of the app on GitHub Pages at [Live Demo](https://salimov333.github.io/virtual-joystick).
-
 ## 📸 Screenshots
 
-![App Screenshot](demo.png)
+![On Mobile](./demo-mobile.png)
+![On Desktop](./demo-desktop.png)
