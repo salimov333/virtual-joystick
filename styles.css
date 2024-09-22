@@ -37,10 +37,10 @@ body {
     height: var(--ball-width);
     background-color: red;
     border-radius: 50%;
-    transition: 0.3s linear;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+    transition: top 0.3s linear, left 0.3s linear;
 }
 
 #controlArea {
@@ -63,6 +63,10 @@ body {
     justify-content: center;
     align-items: center;
     position: relative;
+}
+
+#joystick.hidden, #keyboardJoystick.hidden {
+    display: none;
 }
 
 #controlBall {

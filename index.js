@@ -11,14 +11,12 @@ const joystickWidth = parseFloat(rootStyles.getPropertyValue("--joystick-width")
 const controlBallWidth = parseFloat(rootStyles.getPropertyValue("--control-ball-width"));
 
 // Check for touch support
-const isTouchDevice = "ontouchstart" in window;
+const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 
 // Show appropriate joystick based on device type
-if (isTouchDevice) {
-    joystick.style.display = "flex";
-} else {
-    keyboardJoystick.style.display = "flex";
-}
+joystick.classList.toggle("hidden", !isTouchDevice);
+keyboardJoystick.classList.toggle("hidden", isTouchDevice);
+
 
 // Center the circle by accounting for half its width/height
 let circleX = (moveArea.offsetWidth - ballWidth) / 2;
@@ -92,7 +90,7 @@ if (isTouchDevice) {
         // Update circle position based on control ball movement
         circleX += (constrainedPosition.controlBallX - joystick.offsetWidth / 2) * (moveSpeed / (joystickWidth / 2));
         circleY += (constrainedPosition.controlBallY - joystick.offsetHeight / 2) * (moveSpeed / (joystickWidth / 2));
-        
+
         constrainCircleToBounds();
         updateCirclePosition();
 
