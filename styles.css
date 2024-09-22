@@ -41,6 +41,10 @@ body {
     top: 50%;
     transform: translate(-50%, -50%);
     transition: top 0.3s linear, left 0.3s linear;
+    -webkit-transition: top 0.3s linear, left 0.3s linear;
+    -moz-transition: top 0.3s linear, left 0.3s linear;
+    -ms-transition: top 0.3s linear, left 0.3s linear;
+    -o-transition: top 0.3s linear, left 0.3s linear;
 }
 
 #controlArea {
@@ -53,7 +57,7 @@ body {
     position: relative;
 }
 
-#joystick, #keyboardJoystick {
+#joystick {
     width: var(--joystick-width);
     height: var(--joystick-width);
     background-color: rgba(0, 0, 0, 0.2);
@@ -65,10 +69,6 @@ body {
     position: relative;
 }
 
-#joystick.hidden, #keyboardJoystick.hidden {
-    display: none;
-}
-
 #controlBall {
     width: var(--control-ball-width);
     height: var(--control-ball-width);
@@ -76,41 +76,4 @@ body {
     border-radius: 50%;
     position: absolute;
     /* Make it position absolute to move freely within joystick */
-}
-
-/* Arrow icon styles */
-.arrow {
-    width: 20px;
-    height: 20px;
-    background-color: transparent;
-    position: absolute;
-    font-size: 50px;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.arrow.up {
-    top: 15%;
-    left: 50%;
-    transform: translate(-50%, -100%);
-}
-
-.arrow.down {
-    bottom: 15%;
-    left: 50%;
-    transform: translate(-50%, 100%);
-}
-
-.arrow.left {
-    left: 15%;
-    top: 50%;
-    transform: translate(-100%, -50%);
-}
-
-.arrow.right {
-    right: 15%;
-    top: 50%;
-    transform: translate(100%, -50%);
 }
