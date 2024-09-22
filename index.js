@@ -68,7 +68,3 @@ function moveCircle() {
 }
 
 requestAnimationFrame(moveCircle);
-
-
-// Set the initial position of the circle
-updateCirclePosition();

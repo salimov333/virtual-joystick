@@ -41,6 +41,10 @@ body {
     top: 50%;
     transform: translate(-50%, -50%);
     transition: top 0.3s linear, left 0.3s linear;
+    -webkit-transition: top 0.3s linear, left 0.3s linear;
+    -moz-transition: top 0.3s linear, left 0.3s linear;
+    -ms-transition: top 0.3s linear, left 0.3s linear;
+    -o-transition: top 0.3s linear, left 0.3s linear;
 }
 
 #controlArea {
@@ -63,15 +67,6 @@ body {
     justify-content: center;
     align-items: center;
     position: relative;
-}
-
-#controlBall {
-    width: var(--control-ball-width);
-    height: var(--control-ball-width);
-    background-color: gray;
-    border-radius: 50%;
-    position: absolute;
-    /* Make it position absolute to move freely within keyboardJoystick */
 }
 
 /* Arrow icon styles */
