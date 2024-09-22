@@ -5,6 +5,13 @@ const joystick = document.getElementById("joystick");
 const controlBall = document.getElementById("controlBall");
 const keyboardJoystick = document.getElementById("keyboardJoystick");
 
+const arrowKeysMap = {
+    ArrowUp: document.querySelector(".arrow.up"),
+    ArrowDown: document.querySelector(".arrow.down"),
+    ArrowLeft: document.querySelector(".arrow.left"),
+    ArrowRight: document.querySelector(".arrow.right")
+};
+
 const rootStyles = getComputedStyle(document.documentElement);
 const ballWidth = parseFloat(rootStyles.getPropertyValue("--ball-width"));
 const joystickWidth = parseFloat(rootStyles.getPropertyValue("--joystick-width"));
@@ -109,11 +116,17 @@ if (isTouchDevice) {
     let keysPressed = {};
 
     document.addEventListener("keydown", (e) => {
-        keysPressed[e.key] = true;
+        if (arrowKeysMap[e.key]) {
+            keysPressed[e.key] = true;
+            arrowKeysMap[e.key].classList.add("pressed");
+        }
     });
 
     document.addEventListener("keyup", (e) => {
-        keysPressed[e.key] = false;
+        if (arrowKeysMap[e.key]) {
+            keysPressed[e.key] = false;
+            arrowKeysMap[e.key].classList.remove("pressed");
+        }
     });
 
     function moveCircle() {
