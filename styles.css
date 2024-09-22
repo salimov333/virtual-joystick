@@ -41,6 +41,10 @@ body {
     top: 50%;
     transform: translate(-50%, -50%);
     transition: top 0.3s linear, left 0.3s linear;
+    -webkit-transition: top 0.3s linear, left 0.3s linear;
+    -moz-transition: top 0.3s linear, left 0.3s linear;
+    -ms-transition: top 0.3s linear, left 0.3s linear;
+    -o-transition: top 0.3s linear, left 0.3s linear;
 }
 
 #controlArea {
