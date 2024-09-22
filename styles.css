@@ -1,0 +1,125 @@
+:root {
+    --ball-width: 50px;
+    --joystick-width: 130px;
+    --control-ball-width: 40px;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
+
+#gameArea {
+    display: flex;
+    flex-direction: column;
+    width: 80vw;
+    height: 80vh;
+    background-color: #000;
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+#moveArea {
+    position: relative;
+    flex: 7;
+    /* 70% of the game area */
+    background-color: #282828;
+}
+
+#circle {
+    position: absolute;
+    width: var(--ball-width);
+    height: var(--ball-width);
+    background-color: red;
+    border-radius: 50%;
+    transition: 0.3s linear;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#controlArea {
+    flex: 3;
+    /* 30% of the game area */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+#joystick {
+    width: var(--joystick-width);
+    height: var(--joystick-width);
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 2px solid #333;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#controlBall {
+    width: var(--control-ball-width);
+    height: var(--control-ball-width);
+    background-color: gray;
+    border-radius: 50%;
+    position: absolute;
+    /* Make it position absolute to move freely within joystick */
+}
+
+/* Keyboard joystick styles */
+#keyboardJoystick {
+    width: var(--joystick-width);
+    height: var(--joystick-width);
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 2px solid #333;
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Arrow icon styles */
+.arrow {
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+    position: absolute;
+    font-size: 50px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.arrow.up {
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -100%);
+}
+
+.arrow.down {
+    bottom: 15%;
+    left: 50%;
+    transform: translate(-50%, 100%);
+}
+
+.arrow.left {
+    left: 15%;
+    top: 50%;
+    transform: translate(-100%, -50%);
+}
+
+.arrow.right {
+    right: 15%;
+    top: 50%;
+    transform: translate(100%, -50%);
+}
