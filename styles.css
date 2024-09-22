@@ -53,7 +53,7 @@ body {
     position: relative;
 }
 
-#joystick {
+#joystick, #keyboardJoystick {
     width: var(--joystick-width);
     height: var(--joystick-width);
     background-color: rgba(0, 0, 0, 0.2);
@@ -72,19 +72,6 @@ body {
     border-radius: 50%;
     position: absolute;
     /* Make it position absolute to move freely within joystick */
-}
-
-/* Keyboard joystick styles */
-#keyboardJoystick {
-    width: var(--joystick-width);
-    height: var(--joystick-width);
-    background-color: rgba(0, 0, 0, 0.2);
-    border: 2px solid #333;
-    border-radius: 50%;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 /* Arrow icon styles */
