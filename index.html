@@ -73,6 +73,7 @@
         height: var(--control-ball-width);
         background-color: gray;
         border-radius: 50%;
+        position: absolute; /* Make it position absolute to move freely within joystick */
       }
 
       /* Keyboard joystick styles */
@@ -151,6 +152,12 @@
 
       const rootStyles = getComputedStyle(document.documentElement);
       const ballWidth = parseFloat(rootStyles.getPropertyValue("--ball-width"));
+      const joystickWidth = parseFloat(
+        rootStyles.getPropertyValue("--joystick-width")
+      );
+      const controlBallWidth = parseFloat(
+        rootStyles.getPropertyValue("--control-ball-width")
+      );
 
       // Check for touch support
       const isTouchDevice = "ontouchstart" in window;
@@ -197,6 +204,29 @@
         return distance <= radius;
       }
 
+      function constrainControlBallToBounds(controlBallX, controlBallY) {
+        const joystickRect = joystick.getBoundingClientRect();
+        const centerX = joystickRect.width / 2;
+        const centerY = joystickRect.height / 2;
+
+        const distance = Math.sqrt(
+          (controlBallX - centerX) ** 2 + (controlBallY - centerY) ** 2
+        );
+        if (distance > joystickRect.width / 2 - controlBallWidth / 2) {
+          const angle = Math.atan2(
+            controlBallY - centerY,
+            controlBallX - centerX
+          );
+          controlBallX =
+            centerX +
+            (joystickRect.width / 2 - controlBallWidth / 2) * Math.cos(angle);
+          controlBallY =
+            centerY +
+            (joystickRect.height / 2 - controlBallWidth / 2) * Math.sin(angle);
+        }
+        return { controlBallX, controlBallY };
+      }
+
       // Touch controls
       if (isTouchDevice) {
         controlArea.addEventListener("touchstart", (e) => {
@@ -215,13 +245,29 @@
           const deltaX = touch.clientX - touchStartX;
           const deltaY = touch.clientY - touchStartY;
 
-          if (!isTouchInJoystick(touch.clientX, touch.clientY)) {
-            dragging = false;
-            return;
-          }
+          const controlBallX = controlBall.offsetLeft + deltaX;
+          const controlBallY = controlBall.offsetTop + deltaY;
 
-          circleX += deltaX * moveSpeed;
-          circleY += deltaY * moveSpeed;
+          // Constrain the controlBall within the joystick
+          const constrainedPosition = constrainControlBallToBounds(
+            controlBallX + controlBallWidth / 2,
+            controlBallY + controlBallWidth / 2
+          );
+          controlBall.style.left = `${
+            constrainedPosition.controlBallX - controlBallWidth / 2
+          }px`;
+          controlBall.style.top = `${
+            constrainedPosition.controlBallY - controlBallWidth / 2
+          }px`;
+
+          // Update circle position based on control ball movement
+          circleX +=
+            (constrainedPosition.controlBallX - joystick.offsetWidth / 2) *
+            (moveSpeed / (joystickWidth / 2));
+          circleY +=
+            (constrainedPosition.controlBallY - joystick.offsetHeight / 2) *
+            (moveSpeed / (joystickWidth / 2));
+
           constrainCircleToBounds();
           updateCirclePosition();
 
@@ -231,6 +277,11 @@
 
         controlArea.addEventListener("touchend", () => {
           dragging = false;
+          // Reset control ball to the center
+          controlBall.style.left = `${
+            (joystickWidth - controlBallWidth) / 2
+          }px`;
+          controlBall.style.top = `${(joystickWidth - controlBallWidth) / 2}px`;
         });
       } else {
         // Keyboard controls
@@ -267,8 +318,10 @@
         requestAnimationFrame(moveCircle);
       }
 
-      // Set the initial position of the circle
+      // Set the initial position of the circle and control ball
       updateCirclePosition();
+      controlBall.style.left = `${(joystickWidth - controlBallWidth) / 2}px`;
+      controlBall.style.top = `${(joystickWidth - controlBallWidth) / 2}px`;
     </script>
   </body>
 </html>
